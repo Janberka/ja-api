@@ -1,6 +1,6 @@
 {
   "name": "ja-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Opinionated HTTP request for Browsers and Node.js",
   "main": "index.js",
   "scripts": {
