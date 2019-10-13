@@ -1,0 +1,22 @@
+{
+  "name": "ja-api",
+  "version": "1.0.0",
+  "description": "Opinionated HTTP request for Browsers and Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Janberka/ja-api.git"
+  },
+  "author": "Janberka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Janberka/ja-api/issues"
+  },
+  "homepage": "https://github.com/Janberka/ja-api#readme",
+  "dependencies": {
+    "isomorphic-fetch": "^2.2.1"
+  }
+}
