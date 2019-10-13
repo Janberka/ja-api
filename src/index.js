@@ -1,5 +1,4 @@
 import fetch from 'isomorphic-fetch';
-import conf from '../../conf';
 
 const json = r => r.json().then(json => {
   if (json.error) {
@@ -9,46 +8,52 @@ const json = r => r.json().then(json => {
   return json;
 });
 
-export const apiUrl = `${conf.api.host}/api/`;
+const api = ({ host }) => {
+  const apiUrl = `${host}/api/`;
 
-const getUrl = url => `${apiUrl}${url}`;
-
-const getOpts = (opts = {}) => {
-  const { token = global.token } = opts;
-
-  if (token) {
-    if (!opts.headers) {
-      opts.headers = {};
+  const getUrl = url => `${apiUrl}${url}`;
+  
+  const getOpts = (opts = {}) => {
+    const { token = global.token } = opts;
+  
+    if (token) {
+      if (!opts.headers) {
+        opts.headers = {};
+      }
+  
+      opts.headers.auth = token;
     }
-
-    opts.headers.auth = token;
-  }
-
-  if (opts.headers) {
-    opts.headers = new Headers(opts.headers);
-  }
-
-  return opts;
-};
-
-const myFetch = (url, opts) => fetch(getUrl(url), getOpts(opts)).then(json);
-
-export const get = url => myFetch(url);
-
-export const remove = url => myFetch(url, {method: 'DELETE'});
-
-export const post = (url, data) => {
-  const body = JSON.stringify(data);
-  return myFetch(url, {
-    method: 'POST',
-    body
-  });
-};
-
-export const put = (url, data) => {
-  const body = JSON.stringify(data);
-  return myFetch(url), {
-    method: 'PUT',
-    body
+  
+    if (opts.headers) {
+      opts.headers = new Headers(opts.headers);
+    }
+  
+    return opts;
   };
+  
+  const myFetch = (url, opts) => fetch(getUrl(url), getOpts(opts)).then(json);
+  
+  const get = url => myFetch(url);
+  
+  const remove = url => myFetch(url, {method: 'DELETE'});
+  
+  const post = (url, data) => {
+    const body = JSON.stringify(data);
+    return myFetch(url, {
+      method: 'POST',
+      body
+    });
+  };
+  
+  const put = (url, data) => {
+    const body = JSON.stringify(data);
+    return myFetch(url), {
+      method: 'PUT',
+      body
+    };
+  };
+  
+  return { get, post, remove, put };
 };
+
+export default api;
