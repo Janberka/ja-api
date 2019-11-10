@@ -4,56 +4,56 @@ const json = r => r.json().then(json => {
   if (json.error) {
     throw Error(json.error);
   }
-
+  
   return json;
 });
 
-const api = ({ host }) => {
+const createApi = ({ host, token: apiToken }) => {
   const apiUrl = `${host}/api/`;
 
   const getUrl = url => `${apiUrl}${url}`;
-  
+
   const getOpts = (opts = {}) => {
-    const { token = global.token } = opts;
-  
+    const { token = apiToken, headers = {} } = opts;
+
     if (token) {
-      if (!opts.headers) {
-        opts.headers = {};
-      }
-  
-      opts.headers.auth = token;
+      headers.auth = token;
     }
-  
-    if (opts.headers) {
-      opts.headers = new Headers(opts.headers);
-    }
-  
+
+    opts.headers = new Headers(headers);
+
     return opts;
   };
-  
-  const myFetch = (url, opts) => fetch(getUrl(url), getOpts(opts)).then(json);
-  
-  const get = url => myFetch(url);
-  
-  const remove = url => myFetch(url, {method: 'DELETE'});
-  
-  const post = (url, data) => {
+
+  const myFetch = (rawURL, rawOpts) => {
+    const url = getUrl(rawURL);
+    const opts = getOpts(rawOpts);
+    return fetch(url, opts).then(json)
+  };
+
+  const get = (url, opts = {}) => myFetch(url, {...opts});
+
+  const remove = (url, opts = {}) => myFetch(url, {method: 'DELETE', ...opts});
+
+  const post = (url, data, opts ={}) => {
     const body = JSON.stringify(data);
     return myFetch(url, {
       method: 'POST',
-      body
+      body,
+      ...opts
     });
   };
   
-  const put = (url, data) => {
+  const put = (url, data, opts = {}) => {
     const body = JSON.stringify(data);
     return myFetch(url), {
       method: 'PUT',
-      body
+      body,
+      ...opts
     };
   };
-  
-  return { get, post, remove, put };
-};
 
-export default api;
+  return { get, post, remove, put };
+}
+
+export default createApi;
