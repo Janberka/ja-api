@@ -1,7 +1,5 @@
-import * as fetchImport from 'isomorphic-unfetch'
-const fetch = (fetchImport.default || fetchImport) as typeof fetchImport.default
-
 interface ApiOptions {
+  fetch: Function,
   host?: string | 'http://localhost/'
   token?: string | null
 }
@@ -12,7 +10,7 @@ interface RawOptions {
   headers?: object
 }
 
-export const createApi = ({ host, token: apiToken }: ApiOptions) => {
+const createApi = ({ fetch, host, token: apiToken }: ApiOptions) => {
   const apiUrl = `${host}/api/`
 
   const getUrl = (url: string) => `${apiUrl}${url}`
@@ -29,7 +27,7 @@ export const createApi = ({ host, token: apiToken }: ApiOptions) => {
   const myFetch = (rawURL: string, rawOpts?: RawOptions) => {
     const url = getUrl(rawURL)
     const opts = getOpts(rawOpts)
-    return fetch(url, opts).then(r => r.json())
+    return fetch(url, opts).then((r: Request) => r.json())
   }
 
   const get = (url: string) => myFetch(url)
